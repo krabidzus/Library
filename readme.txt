@@ -1,9 +1,9 @@
 To do list:
 
 
-1. git
+1. upravit front end
 2. database
-3. upravit front end
+
 
 
 
