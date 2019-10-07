@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title>Library</title>
+    </head>
+    <body>
+            <div class="add">
+            <tr>
+                    <td><input type="text" id="add-title" placeholder='Title'></td>
+                    <td><input type="text" id="add-author" placeholder='Author'></td>
+                    <td><input type="number" id="add-pages" placeholder='Total Pages'></td>
+                    
+            </tr>
+
+            <div>
+            <tr>
+                    <td>
+                        <label for="finish">Finish date:</label>
+                        <input type="date" id="add-status" name="trip-finish" value="2019-07-22" min="2018-01-01" max="2029-12-31">
+                    </td>
+                    <button class="btn-add">add</button>
+            </tr>
+            </div>
+
+
+
+        </div>
+
+            <table class="book-table" >
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Total pages</th>
+                        <th>Finish date</th>
+                        <th>Days till end</th>
+                        <th>Pages per day</th>
+                        <th>Finished Pages</th>
+                        <th>Pages left</th>
+                        <th class="btn-delete" id="xxx">Delete</th>
+                        <th>Finished</th>
+                        
+                        <th> </th>
+                    </tr>
+                </thead>
+
+                <!--
+                <tbody>
+                    <tr id="0">
+                        <td>The Hobbit</td>
+                        <td>J.R.Tolkiendddddddddddd</td>
+                        <td>50</td>
+                        <td>done</td>
+                        <td><button class="btn-delete">delete</button></td>
+                        <td><label class="switch"><input type="checkbox"><span class="slider round"></span></label></td>
+                        <td><input type="number" id="finished-pages" value='finished pages'></td>
+                    </tr>
+                </tbody>
+            -->
+            </table> 
+
+
+
+        <script src="app.js"></script>
+    </body>
+</html>

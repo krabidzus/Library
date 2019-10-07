@@ -1,0 +1,46 @@
+.book-table {
+    margin: 0 auto;
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+    width: 700px
+}
+
+.book-table thead th {
+    background-color: #DDEFEF;
+    border: solid 1px #DDEEEE;
+    color: #336B6B;
+    padding: 10px;
+    text-align: left;
+    text-shadow: 1px 1px 1px #fff;
+}
+
+.book-table tbody td {
+    border: solid 1px #DDEEEE;
+    color: #333;
+    padding: 10px;
+    background-color: rgb(220, 226, 226);
+}
+
+.add {
+    margin: 0 auto;
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    padding: 10px;
+    font: normal 13px Arial, sans-serif;
+    height: 40px;
+    width: 678px;
+    background-color: rgb(220, 226, 226);
+}
+
+body {
+    background-image: url("paper.gif");
+    background-color: #533939;
+   }
+
+#add-title,
+#add-author {
+    width: 180px
+}
