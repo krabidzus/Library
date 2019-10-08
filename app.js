@@ -76,7 +76,8 @@ var UIController = (function() {
         pagesLeft1: '#pages-left',
         totalPages: '#pages1',
         daysLeft: "#days-end",
-        averageP: '#average'
+        averageP: '#average',
+        checkbox: '#checkbox'
        
     };
 
@@ -110,7 +111,7 @@ var UIController = (function() {
 
             // Create HTML string with placeholder text
             element = DOMstrings.bookContainer;
-            html = '<tbody><tr id="%id%"><td>%title%</td><td>%author%</td><td type="number" id="pages1">%pages%</td><td>%status%</td><td id="days-end">%diffDays%</td><td id="average">%averagePages%</td><td><input type="number" id="finished-pages" placeholder="0" ></td>   <td id="pages-left">%pagesLeft%</td>     <td><button class="btn-delete" id="xxx">delete</button></td><td><label class="switch"><input type="checkbox"><span class="slider round"></span></label></td></tr></tbody>';
+            html = '<tbody><tr id="%id%"><td>%title%</td><td>%author%</td><td type="number" id="pages1">%pages%</td><td>%status%</td><td id="days-end">%diffDays%</td><td id="average">%averagePages%</td><td><input type="number" id="finished-pages" placeholder="0" ></td>   <td id="pages-left">%pagesLeft%</td>     <td><button class="btn-delete" id="xxx">delete</button></td>  <td><label class="switch"><input id="checkbox" type="checkbox"></td> <span class="slider round"></span></label></tr></tbody>';
 
             // Replace the placeholder text with some actual data
             newHtml = html.replace('%title%', obj.title);
@@ -127,35 +128,47 @@ var UIController = (function() {
         },
 
         changeFinishedPages: function(selectorID) {
-            var changeFinishedPages2, pagesA, element, el, totalPages2, x;
+            var changeFinishedPages2, pagesA, element, el, totalPages2, x, changePages;
 
             // Selectors
             el = document.getElementById(selectorID);
-
             pagesA = el.parentNode.querySelector(DOMstrings.changeFinishedPages).value;
             totalPages2 = el.parentNode.querySelector(DOMstrings.totalPages).innerText;
+            element2 = DOMstrings.changeFinishedPages;
+            checkbox2 = el.parentNode.querySelector(DOMstrings.checkbox).checked;
 
             x = totalPages2 - pagesA;
 
-            if (x < 0) {
-
-                // Cannot finish more pages than total
-                element2 = DOMstrings.changeFinishedPages;
-                el.parentNode.querySelector(element2).value = totalPages2;
-                alert('Warning you finished the book.')
-
-            } else if (pagesA < 0) {
-                // Cannot finish less than 0 pages
-                element2 = DOMstrings.changeFinishedPages;
-                el.parentNode.querySelector(element2).value = 0;
-                alert('Warning cannot finish less than 0 pages.')
-
-            } else {
+            function changePages() {
                 // Change pages left
                 changeFinishedPages2 = totalPages2 - pagesA;
+
                 // Change HTML
                 element = DOMstrings.pagesLeft1;
                 el.parentNode.querySelector(element).innerHTML = changeFinishedPages2;
+            };
+
+            if (x < 0) {
+                // Cannot finish more pages than total
+                el.parentNode.querySelector(element2).value = totalPages2;
+                el.parentNode.querySelector(DOMstrings.checkbox).checked = false;
+                alert('Warning you finished the book.')
+                el.parentNode.querySelector(DOMstrings.checkbox).checked = true;
+
+            } else if (pagesA < 0) {
+                // Cannot finish less than 0 pages
+                el.parentNode.querySelector(element2).value = 0;
+                el.parentNode.querySelector(DOMstrings.checkbox).checked = false;
+                alert('Warning cannot finish less than 0 pages.')
+                el.parentNode.querySelector(DOMstrings.checkbox).checked = true;
+
+            } else if (x === 0) {
+                el.parentNode.querySelector(DOMstrings.checkbox).checked = true;
+                changePages();
+
+            } else {
+                el.parentNode.querySelector(DOMstrings.checkbox).checked = false;
+                changePages();
             }
         },
 
@@ -177,9 +190,26 @@ var UIController = (function() {
             el.parentNode.querySelector(element).innerHTML = averagePages;
         },
 
-        deleteListItem: function(selectorID) {
+        checkBoxChange: function(selectorID) {
+            var el, checkedCheckBox;
 
+            el = document.getElementById(selectorID);
+            checkedCheckBox = el.parentNode.querySelector(DOMstrings.checkbox).checked;
+            totalPages2 = el.parentNode.querySelector(DOMstrings.totalPages).innerText;
+            
+            if (checkedCheckBox) {
+                // Finished pages = total pages
+                el.parentNode.querySelector(DOMstrings.changeFinishedPages).value = totalPages2;
+                
+            } else {
+                // Not finished
+                el.parentNode.querySelector(DOMstrings.changeFinishedPages).value = 0;
+            }
+        },
+
+        deleteListItem: function(selectorID) {
             var el = document.getElementById(selectorID);
+
             el.parentNode.removeChild(el);
         },
 
@@ -187,7 +217,6 @@ var UIController = (function() {
             var fields, fieldsArr;
 
             fields = document.querySelectorAll(DOMstrings.inputTitle + ', ' + DOMstrings.inputAuthor + ', ' + DOMstrings.inputPages + ', ' + DOMstrings.inputStatus);
-            
             fieldsArr = Array.prototype.slice.call(fields);
 
             fieldsArr.forEach(function(current) {
@@ -222,7 +251,8 @@ var controller = (function(bookCtrl, UICtrl) {
         });
 
       document.querySelector(DOM.bookContainer).addEventListener('click', ctrlDeleteItem);  
-      document.querySelector(DOM.bookContainer).addEventListener('click', ctrlChangePages);  
+      document.querySelector(DOM.bookContainer).addEventListener('click', ctrlChangePages);
+      document.querySelector(DOM.bookContainer).addEventListener('click', ctrlCheckBox)  
     };
 
     var ctrlAddItem = function() {
@@ -251,14 +281,32 @@ var controller = (function(bookCtrl, UICtrl) {
             itemID = e.target.parentNode.parentNode.id;
 
             if (itemID) {    
-                // pridat podminku, ze nelze jit do minusu
-
-
                 // Calll method which changes pages left
                   UIController.changeFinishedPages(itemID);
         
                 // Call method which changes pages per day 
                   UIController.changePagesPerDay(itemID);
+            }
+        }
+    };
+
+    var ctrlCheckBox = function(e) {
+        
+        if (e.target.id === 'checkbox') {
+            var itemID;
+
+            itemID = e.target.parentNode.parentNode.parentNode.id;
+
+            if (itemID) {
+                // Call method which change finished pages
+                    UIController.checkBoxChange(itemID);
+
+                // Calll method which changes pages left
+                    UIController.changeFinishedPages(itemID);
+        
+                // Call method which changes pages per day 
+                  UIController.changePagesPerDay(itemID);
+
             }
         }
     };

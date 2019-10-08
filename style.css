@@ -4,7 +4,7 @@
     border-collapse: collapse;
     border-spacing: 0;
     font: normal 13px Arial, sans-serif;
-    width: 700px
+    width: 900px
 }
 
 .book-table thead th {
@@ -31,7 +31,7 @@
     padding: 10px;
     font: normal 13px Arial, sans-serif;
     height: 40px;
-    width: 678px;
+    width: 878px;
     background-color: rgb(220, 226, 226);
 }
 
