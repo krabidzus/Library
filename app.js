@@ -30,7 +30,7 @@ var bookController = (function() {
             newBook = new Book(tit, aut, pag, sta, fp, ID);
 
             // Push it into our data structure
-            allBooks.push(newBook);
+            allBooks.push(newBook);            
 
             // Return the new element
             return newBook;
@@ -268,6 +268,35 @@ var controller = (function(bookCtrl, UICtrl) {
             // 3. Add the item to the UI
             UIController.addBookItem(newItem)
 
+            // *************************** put in db
+            console.log('push in db from app.js')
+
+
+            // fetch('/booksGET').then((response) => {
+            //     response.json().then((data) => {
+            //         if (data.error) {
+            //             console.log('aaa')
+            //             // messageOne.textContent = data.error
+            //         } else {
+            //             console.log('bbb')
+            //             //messageOne.textContent = data.location
+            //            // messageTwo.textContent = data.forecast
+            //         }
+            //     })
+            // })
+
+
+
+            
+            // working but not localhost
+            // fetch('http://puzzle.mead.io/puzzle').then((response) => {
+            //     response.json().then((data) => {
+            //         console.log(data)
+            //     })
+            // })
+
+
+
             // 4. Clear the fields
             UICtrl.clearFields();
         }
@@ -343,4 +372,14 @@ var controller = (function(bookCtrl, UICtrl) {
 controller.init();
 
 
+
+const weatherForm = document.querySelector('.btn-add')
+
+weatherForm.addEventListener('click', () => {
+    fetch('http://puzzle.mead.io/puzzle').then((response) => {
+    response.json().then((data) => {
+        console.log(data)
+    })
+})
+})
 

@@ -1,43 +1,24 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://127.0.0.1:27017/library-api', {
+mongoose.connect('mongodb://127.0.0.1:27017/LibraryDB', {
     useNewUrlParser: true,
     useCreateIndex: true
 })
 
-const Book = mongoose.model('Book', {
-    title: {
-        type: String
+const databaseName = 'LibraryDB'
 
-    },
-    author: {
-        type: String
+// const me = new Book({
+//     title: 'tcp ip',
+//     author: 'Kabe',
+//     pages: 444,
+//     status: '2019-01-01T00:00:02.006Z'
+// })
 
-    },
-    pages: {
-        type: Number
-
-    }, 
-    // status: {
-    //     type: Number
-
-    // },
-    // id: {
-    //     type: Number
-    // }
-})
-
-const me = new Book({
-    title: 'Pan prstenu',
-    author: 'Tolkien',
-    pages: 222
-})
-
-me.save().then(() => {
-    console.log(me)
-}).catch((error) =>{
-    console.log('Error', error)
-})
+// me.save().then(() => {
+//     console.log(me)
+// }).catch((error) =>{
+//     console.log('Error', error)
+// })
 
 
 
