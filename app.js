@@ -268,34 +268,48 @@ var controller = (function(bookCtrl, UICtrl) {
             // 3. Add the item to the UI
             UIController.addBookItem(newItem)
 
-            // *************************** put in db
-            console.log('push in db from app.js')
+            // CMD POST put in DB
+            console.log('put in db from app.js')
 
-
-            // fetch('/booksGET').then((response) => {
-            //     response.json().then((data) => {
-            //         if (data.error) {
-            //             console.log('aaa')
-            //             // messageOne.textContent = data.error
-            //         } else {
-            //             console.log('bbb')
-            //             //messageOne.textContent = data.location
-            //            // messageTwo.textContent = data.forecast
-            //         }
-            //     })
-            // })
-
-
-
+            const urlPost = 'http://localhost:3000/books';
+            var xhr = new XMLHttpRequest();
             
-            // working but not localhost
-            // fetch('http://puzzle.mead.io/puzzle').then((response) => {
-            //     response.json().then((data) => {
-            //         console.log(data)
-            //     })
-            // })
+            xhr.open("POST",urlPost);
+            xhr.setRequestHeader("Content-Type", "application/json");
+           
+            
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState === 4 && xhr.status === 200) {
+                  console.log(xhr.responseText);
+                }
+              }
+            const book = JSON.stringify({
+                title: "eee",
+                author: "eee",
+                pages: 11,
+                status: "2019-01-01T00:00:02.006Z"
+            })
+         
+           xhr.send(book)
 
 
+           
+
+            // *************************** CMD GET init DB - INIT
+
+        //     console.log('get db from app.js')
+
+        //     const url = 'http://localhost:3000/booksGET';
+        //     var xhr = new XMLHttpRequest();
+
+        //     xhr.open('GET',url);
+        //    // xhr.send();
+
+        //     fetch(url).then(function (response) {
+        //         return response.json();
+        //     }).then(function (json) {
+        //         console.log(json);
+        //     });
 
             // 4. Clear the fields
             UICtrl.clearFields();
@@ -372,14 +386,4 @@ var controller = (function(bookCtrl, UICtrl) {
 controller.init();
 
 
-
-const weatherForm = document.querySelector('.btn-add')
-
-weatherForm.addEventListener('click', () => {
-    fetch('http://puzzle.mead.io/puzzle').then((response) => {
-    response.json().then((data) => {
-        console.log(data)
-    })
-})
-})
 

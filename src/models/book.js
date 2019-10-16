@@ -3,29 +3,29 @@ const mongoose = require('mongoose')
 const Book = mongoose.model('Book', {
     title: {
         type: String,
-        required: true
+        //required: true
 
     },
     author: {
         type: String,
-        required: true
+      //  required: true
 
     },
     pages: {
         type: Number,
-        required: true
+       // required: true
 
     }, 
     status: {
         type: Date,
-        required: true
+       // required: true
 
     }
 })
 
 // const me = new Book({
-//     title: 'dfs',
-//     author: 'Kadsfdsffsdafbe',
+//     title: 'aaa',
+//     author: 'aaaa',
 //     pages: 4444,
 //     status: '2019-01-01T00:00:02.006Z'
 // })
