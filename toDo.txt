@@ -1,0 +1,5 @@
+
+
+3. delete from db
+
+4. comand na zmenu stran prectenejch - ukladat do db

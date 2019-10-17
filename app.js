@@ -123,6 +123,28 @@ var UIController = (function() {
             newHtml = newHtml.replace('%averagePages%', averagePages)
             newHtml = newHtml.replace('%pagesLeft%', pagesLeft)
 
+            // Insert book into DB
+            const urlPost = 'http://localhost:3000/books';
+            var xhr = new XMLHttpRequest();
+            
+            xhr.open("POST",urlPost);
+            xhr.setRequestHeader("Content-Type", "application/json");
+           
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState === 4 && xhr.status === 200) {
+                  console.log(xhr.responseText);
+                }
+              };
+
+            const book = JSON.stringify({
+                title: obj.title,
+                author: obj.author,
+                pages: obj.pages,
+                status: obj.status
+            });
+         
+           xhr.send(book)
+
             // Insert the HTML into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         },
@@ -210,6 +232,19 @@ var UIController = (function() {
         deleteListItem: function(selectorID) {
             var el = document.getElementById(selectorID);
 
+            // Delete even from DB
+            const urlD = 'http://localhost:3000/booksDELETE';
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('DELETE',urlD);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            var idDelete = JSON.stringify({
+               "_id": el.id
+            })
+
+            xhr.send(idDelete)
+
             el.parentNode.removeChild(el);
         },
 
@@ -221,6 +256,58 @@ var UIController = (function() {
 
             fieldsArr.forEach(function(current) {
                 current.value = "";
+            });
+        },
+
+        uploadDatabase: function() {
+            const url = 'http://localhost:3000/booksGET';
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET',url);
+
+            fetch(url).then(function (response) {
+                return response.json();
+            }).then(function (json) {
+    
+            // For loop over objects in DB
+                for (var i=0; i < json.length; i++){
+                    console.log(json[i])
+
+            // Counting but not DRY!!!!!!
+            var html, newHtml, element, date, dateFirst, dateSecond, timeDiff, diffDays, pagesPerDay, averagePages, pagesLeft;
+
+            // Time difference
+            date = new Date().toJSON().slice(0,10).replace(/-/g,'-');
+    
+            dateFirst = new Date(json[i].status);
+            dateSecond = new Date(date);
+            
+            timeDiff = Math.abs(dateSecond.getTime() - dateFirst.getTime());
+            diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            // Pages per day
+            pagesLeft = json[i].pages;
+
+            pagesPerDay = pagesLeft / diffDays;
+            averagePages = pagesPerDay.toFixed(2)
+
+            // Create HTML string with placeholder text
+            element = DOMstrings.bookContainer;
+            html = '<tbody><tr id="%id%"><td>%title%</td><td>%author%</td><td type="number" id="pages1">%pages%</td><td>%status%</td><td id="days-end">%diffDays%</td><td id="average">%averagePages%</td><td><input type="number" id="finished-pages" placeholder="0" ></td>   <td id="pages-left">%pagesLeft%</td>     <td><button class="btn-delete" id="xxx">delete</button></td>  <td><label class="switch"><input id="checkbox" type="checkbox"></td> <span class="slider round"></span></label></tr></tbody>';
+
+            // Replace the placeholder text with some actual data
+            newHtml = html.replace('%title%', json[i].title);
+            newHtml = newHtml.replace('%author%', json[i].author);
+            newHtml = newHtml.replace('%pages%', json[i].pages);
+            newHtml = newHtml.replace('%status%', json[i].status.split('T')[0])
+            newHtml = newHtml.replace('%id%', json[i]._id);
+            newHtml = newHtml.replace('%diffDays%', diffDays);
+            newHtml = newHtml.replace('%averagePages%', averagePages)
+            newHtml = newHtml.replace('%pagesLeft%', pagesLeft)
+
+            // Insert the HTML into the DOM
+            document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+                }
             });
         },
 
@@ -255,6 +342,12 @@ var controller = (function(bookCtrl, UICtrl) {
       document.querySelector(DOM.bookContainer).addEventListener('click', ctrlCheckBox)  
     };
 
+        // Clear fields when refresh
+        UICtrl.clearFields();
+
+        // Upload DB when refresh
+        UICtrl.uploadDatabase();
+
     var ctrlAddItem = function() {
         var input, newItem;
 
@@ -267,49 +360,6 @@ var controller = (function(bookCtrl, UICtrl) {
 
             // 3. Add the item to the UI
             UIController.addBookItem(newItem)
-
-            // CMD POST put in DB
-            console.log('put in db from app.js')
-
-            const urlPost = 'http://localhost:3000/books';
-            var xhr = new XMLHttpRequest();
-            
-            xhr.open("POST",urlPost);
-            xhr.setRequestHeader("Content-Type", "application/json");
-           
-            
-            xhr.onreadystatechange = function () {
-                if(xhr.readyState === 4 && xhr.status === 200) {
-                  console.log(xhr.responseText);
-                }
-              }
-            const book = JSON.stringify({
-                title: "eee",
-                author: "eee",
-                pages: 11,
-                status: "2019-01-01T00:00:02.006Z"
-            })
-         
-           xhr.send(book)
-
-
-           
-
-            // *************************** CMD GET init DB - INIT
-
-        //     console.log('get db from app.js')
-
-        //     const url = 'http://localhost:3000/booksGET';
-        //     var xhr = new XMLHttpRequest();
-
-        //     xhr.open('GET',url);
-        //    // xhr.send();
-
-        //     fetch(url).then(function (response) {
-        //         return response.json();
-        //     }).then(function (json) {
-        //         console.log(json);
-        //     });
 
             // 4. Clear the fields
             UICtrl.clearFields();
@@ -360,6 +410,7 @@ var controller = (function(bookCtrl, UICtrl) {
             var itemID, ID;
 
             itemID = e.target.parentNode.parentNode.id;
+        
     
             if (itemID) {
     
@@ -368,8 +419,9 @@ var controller = (function(bookCtrl, UICtrl) {
                 // 1. Delete the item from the data structure
                 bookCtrl.deleteItem(ID);
     
-                // 2. Delete the item from the UI
+                // 2. Delete the item from the UI and from DB
                 UICtrl.deleteListItem(itemID);
+
             }
         }
     };

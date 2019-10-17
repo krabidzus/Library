@@ -11,18 +11,14 @@ app.use(express.json())
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE")
     next();
   });
 
 
 app.post('/books', (req, res) =>  {
-    
-   // res.set("Access-Control-Allow-Origin","*")
 
-    console.log('cmd post index.js')
-    console.log(req.body)
-
-    const book = new Book(req.body)  // params
+    const book = new Book(req.body) 
 
     book.save().then(() => {
         res.send(book)
@@ -32,10 +28,6 @@ app.post('/books', (req, res) =>  {
 })
 
 app.get('/booksGET', (req, res) => {
-    
-    // res.header("Access-Control-Allow-Origin","*")
-
-    console.log('cmd get index.js')
 
     Book.find({}).then((books) => {
         res.send(books)
@@ -43,6 +35,33 @@ app.get('/booksGET', (req, res) => {
         res.status(500).send()
     })
 })
+
+app.delete('/booksDELETE', (req, res) => {
+    console.log(req.body)
+
+    Book.findByIdAndDelete(req.body).then((book) => {
+        res.send(book)
+    }).catch((e) => {
+        res.status(500).send()
+    })
+})
+
+
+// Jedinej async -> predelat ostatni takhle 93. promsie chaining
+// app.delete('/booksDELETE', async (req, res) => {
+   
+//     try {
+//         const book = await Book.findByIdAndDelete(req.body)
+
+//         if (!book) {
+//             return res.status(404).send()
+//         }
+
+//         res.send(book)
+//     } catch (e) {
+//         res.status(500).send()
+//     }
+// })
 
 app.listen(port, () => {
     console.log('Server is up on port ' + port)
